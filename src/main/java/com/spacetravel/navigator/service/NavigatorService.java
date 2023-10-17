@@ -1,17 +1,13 @@
 package com.spacetravel.navigator.service;
 
 import com.spacetravel.navigator.exceptions.NoSuchRouteException;
-import com.spacetravel.navigator.model.SpaceHighway;
-import com.spacetravel.navigator.model.SpaceHighwayKey;
 import com.spacetravel.navigator.model.StarSystemKey;
 import com.spacetravel.navigator.repository.SpaceHighwayRepository;
-import com.spacetravel.navigator.repository.StarSystemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;

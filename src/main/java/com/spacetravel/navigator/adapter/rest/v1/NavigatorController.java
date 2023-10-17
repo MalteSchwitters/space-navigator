@@ -2,7 +2,6 @@ package com.spacetravel.navigator.adapter.rest.v1;
 
 import com.spacetravel.navigator.model.StarSystemKey;
 import com.spacetravel.navigator.service.NavigatorService;
-import com.spacetravel.navigator.service.StarSystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

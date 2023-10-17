@@ -5,12 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.spacetravel.navigator.exceptions.NoSuchRouteException;
 import com.spacetravel.navigator.model.StarSystemKey;
-import com.spacetravel.navigator.repository.StarSystemRepository;
 import com.spacetravel.navigator.repository.memory.SpaceHighwayInMemoryRepository;
 import com.spacetravel.navigator.service.NavigatorService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
