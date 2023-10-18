@@ -1,5 +1,6 @@
 package com.spacetravel.navigator.repository;
 
+import com.spacetravel.navigator.exceptions.RouteAlreadyExistsException;
 import com.spacetravel.navigator.model.SpaceHighway;
 import com.spacetravel.navigator.model.SpaceHighwayKey;
 import com.spacetravel.navigator.model.StarSystemKey;
@@ -17,5 +18,5 @@ public interface SpaceHighwayRepository {
 
     Optional<SpaceHighway> findByKey(@NonNull SpaceHighwayKey key);
 
-    SpaceHighway add(@NonNull StarSystemKey startStarSystem, @NonNull StarSystemKey targetStarSystem, double duration);
+    SpaceHighway add(@NonNull StarSystemKey startStarSystem, @NonNull StarSystemKey targetStarSystem, double duration) throws RouteAlreadyExistsException;
 }

@@ -21,23 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class CustomErrorController implements ErrorController {
 
     @ResponseBody()
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(IllegalArgumentException.class)
-    public final String handleIllegalArgumentException(HttpServletRequest req, Exception ex) {
-        return ex.getMessage();
-    }
-
-    @ResponseBody()
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(BadRequestException.class)
-    public final String handleBadRequestException(HttpServletRequest req, Exception ex) {
-        return ex.getMessage();
-    }
-
-    @ResponseBody()
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NotFoundException.class)
-    public final String handleNotFoundException(HttpServletRequest req, Exception ex) {
+    @ExceptionHandler(Exception.class)
+    public final String handleAnyException(HttpServletRequest req, Exception ex) {
+        //        if (ex.getClass().getAnnotation(ResponseStatus.class) == null) {
+        //
+        //        }
         return ex.getMessage();
     }
 
