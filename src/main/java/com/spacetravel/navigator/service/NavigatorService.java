@@ -24,13 +24,13 @@ public class NavigatorService {
 
     /**
      * This function calculates the duration for the provided route. If a route part has the same start and end
-     * star system it is treated as a route with duration 0. If the length of the route is less then 2 star systems, the
-     * duration is always 0.
+     * star system it is treated as a route with duration 0. If the length of the route is less than two star-systems,
+     * the duration is always 0.
      * @param starSystems the route of star systems
      * @return duration in hours
      * @throws NoSuchRouteException if the route is invalid
      */
-    public double calculateTotalDurationForRoute(@NonNull List<StarSystemKey> starSystems) {
+    public double calculateTotalDurationForRoute(@NonNull List<StarSystemKey> starSystems) throws NoSuchRouteException {
         if (starSystems.size() < 2) {
             return 0.0;
         }
@@ -51,13 +51,14 @@ public class NavigatorService {
     }
 
     /**
-     * This function calculates the fastest route between two star systems using the a* algorithm
-     * @param from star system key
-     * @param to star system key
-     * @return fastest route
+     * This function calculates the fastest route between two star-systems using the a* algorithm. If start and end
+     * star systems are the same, at least one other star system is visited.
+     * @param from star-system key
+     * @param to star-system key
+     * @return fastest route with at least two star-systems
      * @throws NoSuchRouteException if no route was found
      */
-    public List<StarSystemKey> calculateFastestRoute(@NonNull StarSystemKey from, @NonNull StarSystemKey to) {
+    public List<StarSystemKey> calculateFastestRoute(@NonNull StarSystemKey from, @NonNull StarSystemKey to) throws NoSuchRouteException {
         var open = new PriorityQueue<RouteNode>();
         open.add(new RouteNode(from, 0.0, null));
         var closed = new LinkedList<StarSystemKey>();
@@ -105,19 +106,15 @@ public class NavigatorService {
         throw new NoSuchRouteException();
     }
 
-
-
     private record RouteNode(
             @NonNull StarSystemKey starSystem,
             double cost,
             @Nullable RouteNode previous
-    ) implements Comparable {
+    ) implements Comparable<RouteNode> {
 
         @Override
-        public int compareTo(Object o) {
-            RouteNode a = this;
-            RouteNode b = (RouteNode) o;
-            return Double.compare(a.cost, b.cost);
+        public int compareTo(RouteNode b) {
+            return Double.compare(this.cost, b.cost);
         }
     }
 }

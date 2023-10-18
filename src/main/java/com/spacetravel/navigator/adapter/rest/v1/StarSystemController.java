@@ -1,5 +1,6 @@
 package com.spacetravel.navigator.adapter.rest.v1;
 
+import com.spacetravel.errors.BadRequestException;
 import com.spacetravel.navigator.adapter.rest.v1.model.CreateStarSystemRequest;
 import com.spacetravel.navigator.adapter.rest.v1.model.StarSystemRepresentation;
 import com.spacetravel.navigator.model.StarSystemKey;
@@ -40,7 +41,7 @@ public class StarSystemController {
     @PostMapping()
     public ResponseEntity<StarSystemRepresentation> addStarSystem(@RequestBody CreateStarSystemRequest request) {
         if (request.getName() == null) {
-            throw new IllegalArgumentException("missing star system name");
+            throw new BadRequestException("MISSING STAR SYSTEM NAME");
         }
 
         var starSystem = starSystemService.addStarSystem(request.getName());

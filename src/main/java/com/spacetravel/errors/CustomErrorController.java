@@ -1,4 +1,4 @@
-package com.spacetravel.exceptions;
+package com.spacetravel.errors;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.boot.web.servlet.error.ErrorController;
@@ -23,7 +23,21 @@ public class CustomErrorController implements ErrorController {
     @ResponseBody()
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException.class)
-    public final String handleIllegalArgumentExceptionException(HttpServletRequest req, Exception ex) {
+    public final String handleIllegalArgumentException(HttpServletRequest req, Exception ex) {
+        return ex.getMessage();
+    }
+
+    @ResponseBody()
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BadRequestException.class)
+    public final String handleBadRequestException(HttpServletRequest req, Exception ex) {
+        return ex.getMessage();
+    }
+
+    @ResponseBody()
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NotFoundException.class)
+    public final String handleNotFoundException(HttpServletRequest req, Exception ex) {
         return ex.getMessage();
     }
 

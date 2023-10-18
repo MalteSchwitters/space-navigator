@@ -26,7 +26,7 @@ public class NavigatorServiceTest {
 
     // Exercise 1
     @Test
-    public void testCalculateTotalDurationForRoute() {
+    public void testCalculateTotalDurationForRoute() throws Exception {
         var navigatorService = generateTestNavigatorService();
         var route = List.of(sol, alphaCentauri, sirius);
         var duration = navigatorService.calculateTotalDurationForRoute(route);
@@ -35,7 +35,7 @@ public class NavigatorServiceTest {
 
     // Exercise 2
     @Test
-    public void testCalculateTotalDurationForShortRoute() {
+    public void testCalculateTotalDurationForShortRoute() throws Exception {
         var navigatorService = generateTestNavigatorService();
         var route = List.of(sol, betelgeuse);
         var duration = navigatorService.calculateTotalDurationForRoute(route);
@@ -44,7 +44,7 @@ public class NavigatorServiceTest {
 
     // Exercise 3
     @Test
-    public void testCalculateTotalDurationForMediumRoute() {
+    public void testCalculateTotalDurationForMediumRoute() throws Exception {
         var navigatorService = generateTestNavigatorService();
         var route = List.of(sol, betelgeuse, sirius);
         var duration = navigatorService.calculateTotalDurationForRoute(route);
@@ -53,7 +53,7 @@ public class NavigatorServiceTest {
 
     // Exercise 4
     @Test
-    public void testCalculateTotalDurationForLongRoute() {
+    public void testCalculateTotalDurationForLongRoute() throws Exception {
         var navigatorService = generateTestNavigatorService();
         var route = List.of(sol, vega, alphaCentauri, sirius, betelgeuse);
         var duration = navigatorService.calculateTotalDurationForRoute(route);
@@ -70,7 +70,7 @@ public class NavigatorServiceTest {
 
     // Exercise 8
     @Test
-    public void testCalculateFastestRoute() {
+    public void testCalculateFastestRoute() throws Exception {
         var navigatorService = generateTestNavigatorService();
         var route = navigatorService.calculateFastestRoute(sol, sirius);
         var duration = navigatorService.calculateTotalDurationForRoute(route);
@@ -85,7 +85,7 @@ public class NavigatorServiceTest {
 
     // Exercise 9
     @Test
-    public void testCalculateFastestRouteSameStartAndEnd() {
+    public void testCalculateFastestRouteSameStartAndEnd() throws Exception {
         var navigatorService = generateTestNavigatorService();
         var route = navigatorService.calculateFastestRoute(alphaCentauri, alphaCentauri);
         var duration = navigatorService.calculateTotalDurationForRoute(route);

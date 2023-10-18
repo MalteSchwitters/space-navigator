@@ -1,5 +1,6 @@
 package com.spacetravel.navigator.adapter.rest.v1;
 
+import com.spacetravel.errors.BadRequestException;
 import com.spacetravel.navigator.adapter.rest.v1.model.CreateSpaceHighwayRequest;
 import com.spacetravel.navigator.adapter.rest.v1.model.SpaceHighwayRepresentation;
 import com.spacetravel.navigator.model.StarSystemKey;
@@ -28,13 +29,13 @@ public class SpaceHighwayController {
     @PostMapping()
     public ResponseEntity<SpaceHighwayRepresentation> addSpaceHighway(@RequestBody CreateSpaceHighwayRequest request) {
         if (request.getFromStarSystemKey() == null) {
-            throw new IllegalArgumentException("missing from star system");
+            throw new BadRequestException("MISSING FROM STAR SYSTEM");
         }
         if (request.getToStarSystemKey() == null) {
-            throw new IllegalArgumentException("missing to star system");
+            throw new BadRequestException("MISSING TO STAR SYSTEM");
         }
         if (request.getDuration() == null) {
-            throw new IllegalArgumentException("missing duration");
+            throw new BadRequestException("MISSING DURATION");
         }
 
         var from = new StarSystemKey(request.getFromStarSystemKey());
