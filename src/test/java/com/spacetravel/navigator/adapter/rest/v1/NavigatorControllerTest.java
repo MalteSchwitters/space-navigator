@@ -1,7 +1,7 @@
 package com.spacetravel.navigator.adapter.rest.v1;
 
 import com.google.gson.Gson;
-import com.spacetravel.navigator.adapter.rest.v1.model.RouteDurationRepresentation;
+import com.spacetravel.navigator.adapter.rest.v1.model.RouteRepresentation;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,11 +29,11 @@ public class NavigatorControllerTest {
                 .build();
         var response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode());
-        var starSystems = new Gson().fromJson(response.body(), String[].class);
-        assertEquals(3, starSystems.length);
-        assertEquals("solar-system", starSystems[0]);
-        assertEquals("alpha-centauri", starSystems[1]);
-        assertEquals("sirius", starSystems[2]);
+        var route = new Gson().fromJson(response.body(), RouteRepresentation.class);
+        assertEquals(3, route.getStarSystems().size());
+        assertEquals("solar-system", route.getStarSystems().get(0));
+        assertEquals("alpha-centauri", route.getStarSystems().get(1));
+        assertEquals("sirius", route.getStarSystems().get(2));
     }
 
     @Test
@@ -46,7 +46,7 @@ public class NavigatorControllerTest {
                 .build();
         var response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode());
-        var duration = new Gson().fromJson(response.body(), RouteDurationRepresentation.class);
+        var duration = new Gson().fromJson(response.body(), RouteRepresentation.class);
         assertEquals(9.0, duration.getDuration());
     }
 

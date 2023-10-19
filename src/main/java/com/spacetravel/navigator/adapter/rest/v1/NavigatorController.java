@@ -1,7 +1,7 @@
 package com.spacetravel.navigator.adapter.rest.v1;
 
 import com.spacetravel.errors.NotFoundException;
-import com.spacetravel.navigator.adapter.rest.v1.model.RouteDurationRepresentation;
+import com.spacetravel.navigator.adapter.rest.v1.model.RouteRepresentation;
 import com.spacetravel.navigator.exceptions.NoSuchRouteException;
 import com.spacetravel.navigator.model.StarSystemKey;
 import com.spacetravel.navigator.service.StarSystemService;
@@ -31,11 +31,11 @@ public class NavigatorController {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    public ResponseEntity<RouteDurationRepresentation> calculateRouteDuration(@RequestBody List<String> starSystems) {
+    public ResponseEntity<RouteRepresentation> calculateRouteDuration(@RequestBody List<String> starSystems) {
         var route = starSystems.stream().map(StarSystemKey::new).toList();
         try {
             var duration = starSystemService.calculateTotalDurationForRoute(route);
-            return ResponseEntity.ok(new RouteDurationRepresentation(duration));
+            return ResponseEntity.ok(new RouteRepresentation(starSystems, duration));
         } catch (NoSuchRouteException e) {
             throw new NotFoundException("NO SUCH ROUTE");
         }
@@ -46,7 +46,7 @@ public class NavigatorController {
         value = "/fastest-route/from/{fromStarSystem}/to/{toStarSystem}",
         produces = { "application/json" }
     )
-    public ResponseEntity<List<String>> calculateRouteDuration(
+    public ResponseEntity<RouteRepresentation> calculateFastestRoute(
             @PathVariable("fromStarSystem") String fromStarSystem,
             @PathVariable("toStarSystem") String toStarSystem
     ) {
@@ -54,8 +54,9 @@ public class NavigatorController {
         var to = new StarSystemKey(toStarSystem);
 
         var route = starSystemService.calculateFastestRoute(from, to)
+                .map(RouteRepresentation::new)
                 .orElseThrow(() -> new NotFoundException("NO SUCH ROUTE"));
 
-        return ResponseEntity.ok(route.starSystems().stream().map(StarSystemKey::value).toList());
+        return ResponseEntity.ok(route);
     }
 }
