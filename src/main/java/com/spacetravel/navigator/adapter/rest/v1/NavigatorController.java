@@ -7,11 +7,8 @@ import com.spacetravel.navigator.model.StarSystemKey;
 import com.spacetravel.navigator.service.StarSystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -28,8 +25,8 @@ public class NavigatorController {
     @RequestMapping(
         method = RequestMethod.POST,
         value = "/route-duration",
-        produces = { "application/json" },
-        consumes = { "application/json" }
+        produces = {"application/json"},
+        consumes = {"application/json"}
     )
     public ResponseEntity<RouteRepresentation> calculateRouteDuration(@RequestBody List<String> starSystems) {
         var route = starSystems.stream().map(StarSystemKey::new).toList();
@@ -44,18 +41,18 @@ public class NavigatorController {
     @RequestMapping(
         method = RequestMethod.GET,
         value = "/fastest-route/from/{fromStarSystem}/to/{toStarSystem}",
-        produces = { "application/json" }
+        produces = {"application/json"}
     )
     public ResponseEntity<RouteRepresentation> calculateFastestRoute(
-            @PathVariable("fromStarSystem") String fromStarSystem,
-            @PathVariable("toStarSystem") String toStarSystem
+        @PathVariable("fromStarSystem") String fromStarSystem,
+        @PathVariable("toStarSystem") String toStarSystem
     ) {
         var from = new StarSystemKey(fromStarSystem);
         var to = new StarSystemKey(toStarSystem);
 
         var route = starSystemService.calculateFastestRoute(from, to)
-                .map(RouteRepresentation::new)
-                .orElseThrow(() -> new NotFoundException("NO SUCH ROUTE"));
+            .map(RouteRepresentation::new)
+            .orElseThrow(() -> new NotFoundException("NO SUCH ROUTE"));
 
         return ResponseEntity.ok(route);
     }

@@ -32,8 +32,8 @@ public class SpaceHighwayController {
     @RequestMapping(
         method = RequestMethod.POST,
         value = "",
-        produces = { "application/json" },
-        consumes = { "application/json" }
+        produces = {"application/json"},
+        consumes = {"application/json"}
     )
     public ResponseEntity<SpaceHighwayRepresentation> addSpaceHighway(@RequestBody CreateSpaceHighwayRequest request) {
         if (request.getFromStarSystemKey() == null) {
@@ -52,12 +52,12 @@ public class SpaceHighwayController {
             var route = starSystemService.addSpaceHighway(from, to, request.getDuration());
 
             URI location = ServletUriComponentsBuilder
-                    .fromCurrentRequest().path("/by-key/" + route.key().value())
-                    .buildAndExpand(route.key().value()).toUri();
+                .fromCurrentRequest().path("/by-key/" + route.key().value())
+                .buildAndExpand(route.key().value()).toUri();
 
             return ResponseEntity
-                    .created(location)
-                    .body(new SpaceHighwayRepresentation(route));
+                .created(location)
+                .body(new SpaceHighwayRepresentation(route));
         } catch (RouteAlreadyExistsException e) {
             throw new ConflictException(e.getMessage());
         } catch (InvalidRouteException e) {

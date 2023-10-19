@@ -1,9 +1,5 @@
 package com.spacetravel.navigator.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import com.spacetravel.navigator.exceptions.NoSuchRouteException;
 import com.spacetravel.navigator.model.RouteFilter;
 import com.spacetravel.navigator.model.StarSystemKey;
@@ -12,6 +8,8 @@ import com.spacetravel.navigator.repository.memory.StarSystemInMemoryRepository;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class StarSystemServiceNavigatorTest {
 

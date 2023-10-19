@@ -1,7 +1,5 @@
 package com.spacetravel.navigator.adapter.rest.v1;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import com.google.gson.Gson;
 import com.spacetravel.navigator.adapter.rest.v1.model.StarSystemRepresentation;
 import org.junit.jupiter.api.Test;
@@ -14,6 +12,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class StarSystemControllerTest {

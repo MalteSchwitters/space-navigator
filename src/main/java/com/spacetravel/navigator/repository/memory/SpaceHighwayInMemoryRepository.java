@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -50,15 +51,15 @@ public class SpaceHighwayInMemoryRepository implements SpaceHighwayRepository {
 
     public Stream<SpaceHighway> findByStartSystem(@NonNull StarSystemKey startStarSystem) {
         return knownRoutes.values()
-                .stream()
-                .filter(it -> it.from().equals(startStarSystem));
+            .stream()
+            .filter(it -> it.from().equals(startStarSystem));
     }
 
     public Optional<SpaceHighway> findByStartAndEndSystem(@NonNull StarSystemKey startStarSystem, @NonNull StarSystemKey endStarSystem) {
         return knownRoutes.values().stream()
-                .filter(it -> it.from().equals(startStarSystem))
-                .filter(it -> it.to().equals(endStarSystem))
-                .findFirst();
+            .filter(it -> it.from().equals(startStarSystem))
+            .filter(it -> it.to().equals(endStarSystem))
+            .findFirst();
     }
 
     public Optional<SpaceHighway> findByKey(@NonNull SpaceHighwayKey key) {
@@ -66,17 +67,17 @@ public class SpaceHighwayInMemoryRepository implements SpaceHighwayRepository {
     }
 
     public SpaceHighway add(@NonNull StarSystemKey startStarSystem, @NonNull StarSystemKey targetStarSystem, double duration) throws RouteAlreadyExistsException {
-        var key =  new SpaceHighwayKey(startStarSystem.value() + "_" + targetStarSystem.value());
+        var key = new SpaceHighwayKey(startStarSystem.value() + "_" + targetStarSystem.value());
         var maybeExistingRoute = findByKey(key);
         if (maybeExistingRoute.isPresent()) {
             log.error("Cannot add space highway between star systems " + startStarSystem + " and " + targetStarSystem + ": Route already exists");
             throw new RouteAlreadyExistsException();
         }
         SpaceHighway entity = new SpaceHighway(
-                key,
-                startStarSystem,
-                targetStarSystem,
-                duration
+            key,
+            startStarSystem,
+            targetStarSystem,
+            duration
         );
         knownRoutes.put(key, entity);
         return entity;

@@ -1,15 +1,12 @@
 package com.spacetravel.navigator.service;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import com.spacetravel.navigator.exceptions.InvalidRouteException;
 import com.spacetravel.navigator.model.StarSystemKey;
 import com.spacetravel.navigator.repository.memory.SpaceHighwayInMemoryRepository;
 import com.spacetravel.navigator.repository.memory.StarSystemInMemoryRepository;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class StarSystemServiceCRUDTest {
 

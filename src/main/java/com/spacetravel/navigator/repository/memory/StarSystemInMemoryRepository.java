@@ -6,9 +6,7 @@ import com.spacetravel.navigator.repository.StarSystemRepository;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -46,9 +44,9 @@ public class StarSystemInMemoryRepository implements StarSystemRepository {
     @Override
     public StarSystem add(@NonNull String name) {
         var key = name
-                .toLowerCase()
-                .replaceAll(" ", "-")
-                .replaceAll("/[^a-z0-9-]/g", "");
+            .toLowerCase()
+            .replaceAll(" ", "-")
+            .replaceAll("/[^a-z0-9-]/g", "");
 
         if (findByKey(new StarSystemKey(key)).isPresent()) {
             var collisionFreeKey = key;

@@ -4,7 +4,6 @@ import com.spacetravel.navigator.model.Route;
 import com.spacetravel.navigator.model.StarSystemKey;
 import org.springframework.lang.NonNull;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class RouteRepresentation {

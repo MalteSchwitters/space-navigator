@@ -12,7 +12,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -24,8 +23,8 @@ public class StarSystemService {
 
     @Autowired
     public StarSystemService(
-            StarSystemRepository starSystemRepository,
-            SpaceHighwayRepository spaceHighwayRepository
+        StarSystemRepository starSystemRepository,
+        SpaceHighwayRepository spaceHighwayRepository
     ) {
         this.starSystemRepository = starSystemRepository;
         this.spaceHighwayRepository = spaceHighwayRepository;
@@ -60,6 +59,7 @@ public class StarSystemService {
      * This function calculates the duration for the provided route. If a route part has the same start and end
      * star system it is treated as a route with duration 0. If the length of the route is less than two star-systems,
      * the duration is always 0.
+     *
      * @param starSystems the route of star systems
      * @return duration in hours
      * @throws NoSuchRouteException if the route is invalid
@@ -78,7 +78,7 @@ public class StarSystemService {
                 continue;
             }
             var spaceHighway = spaceHighwayRepository.findByStartAndEndSystem(from, to)
-                    .orElseThrow(NoSuchRouteException::new);
+                .orElseThrow(NoSuchRouteException::new);
             duration += spaceHighway.duration();
         }
         return duration;
@@ -86,8 +86,9 @@ public class StarSystemService {
 
     /**
      * Calculate all known routes between the 'from' star-system and the 'to' star-system that match the given filter
-     * @param from start star-system
-     * @param to end star-system
+     *
+     * @param from   start star-system
+     * @param to     end star-system
      * @param filter Filter of minimum steps, maximum steps or maximum duration
      * @return a list of all routes
      */
@@ -132,9 +133,9 @@ public class StarSystemService {
         // recursively test all reachable star systems
         for (var spaceHighway : spaceHighways) {
             var newFilter = new RouteFilter(
-                    filter.minSteps() != null ? filter.minSteps() - 1: null,
-                    filter.maxSteps() != null ? filter.maxSteps() -1 : null,
-                    filter.maxDuration() != null ? filter.maxDuration() : null);
+                filter.minSteps() != null ? filter.minSteps() - 1 : null,
+                filter.maxSteps() != null ? filter.maxSteps() - 1 : null,
+                filter.maxDuration() != null ? filter.maxDuration() : null);
             var newDuration = duration + spaceHighway.duration();
             for (var subRoute : calculateAllRoutes(spaceHighway.to(), to, newFilter, newDuration)) {
                 List<StarSystemKey> starSystems = new LinkedList<>();
@@ -149,8 +150,9 @@ public class StarSystemService {
     /**
      * This function calculates the fastest route between two star-systems using the a* algorithm. If start and end
      * star systems are the same, at least one other star system is visited.
+     *
      * @param from star-system key
-     * @param to star-system key
+     * @param to   star-system key
      * @return an optional of the fastest route with at least two star-systems
      */
     public Optional<Route> calculateFastestRoute(@NonNull StarSystemKey from, @NonNull StarSystemKey to) {
@@ -177,18 +179,18 @@ public class StarSystemService {
             }
 
             var successors = this.spaceHighwayRepository
-                    .findByStartSystem(currentNode.starSystem())
-                    .toList();
+                .findByStartSystem(currentNode.starSystem())
+                .toList();
             for (var successor : successors) {
                 if (closed.contains(successor.to())) {
                     // successor is already on closed list
                     continue;
                 }
                 // calculate cost to get to this node
-                var cost  = currentNode.cost() + successor.duration();
+                var cost = currentNode.cost() + successor.duration();
                 var maybeExistingRoute = open.stream()
-                        .filter(it -> it.starSystem().equals(successor.to()))
-                        .findFirst();
+                    .filter(it -> it.starSystem().equals(successor.to()))
+                    .findFirst();
                 if (maybeExistingRoute.isPresent() && cost > maybeExistingRoute.get().cost()) {
                     // successor is already on open list with a shorter path
                     continue;
@@ -203,9 +205,9 @@ public class StarSystemService {
     }
 
     private record RouteNode(
-            @NonNull StarSystemKey starSystem,
-            double cost,
-            @Nullable RouteNode previous
+        @NonNull StarSystemKey starSystem,
+        double cost,
+        @Nullable RouteNode previous
     ) implements Comparable<RouteNode> {
 
         @Override
