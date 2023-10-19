@@ -4,6 +4,8 @@ import com.spacetravel.errors.BadRequestException;
 import com.spacetravel.errors.NotFoundException;
 import com.spacetravel.navigator.adapter.rest.v1.model.CreateStarSystemRequest;
 import com.spacetravel.navigator.adapter.rest.v1.model.StarSystemRepresentation;
+import com.spacetravel.navigator.exceptions.InvalidStarSystemException;
+import com.spacetravel.navigator.model.StarSystem;
 import com.spacetravel.navigator.model.StarSystemKey;
 import com.spacetravel.navigator.service.StarSystemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,25 +53,27 @@ public class StarSystemController {
     )
     public ResponseEntity<StarSystemRepresentation> addStarSystem(@RequestBody CreateStarSystemRequest request) {
         if (request.getName() == null) {
-            throw new BadRequestException("MISSING STAR SYSTEM NAME");
+            throw new BadRequestException("BAD REQUEST: missing star system name");
         }
 
-        var starSystem = starSystemService.addStarSystem(request.getName());
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/by-key/" + starSystem.key().value())
-                .buildAndExpand(starSystem.key().value()).toUri();
-
-        return ResponseEntity
-                .created(location)
-                .body(new StarSystemRepresentation(starSystem));
+        try {
+            StarSystem starSystem = starSystemService.addStarSystem(request.getName());
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentRequest().path("/by-key/" + starSystem.key().value())
+                    .buildAndExpand(starSystem.key().value()).toUri();
+            return ResponseEntity
+                    .created(location)
+                    .body(new StarSystemRepresentation(starSystem));
+        } catch (InvalidStarSystemException e) {
+            throw new BadRequestException(e.getMessage());
+        }
     }
 
     @GetMapping("/by-key/{key}")
     @RequestMapping(
-        method = RequestMethod.POST,
+        method = RequestMethod.GET,
         value = "/by-key/{key}",
-        produces = { "application/json" },
-        consumes = { "application/json" }
+        produces = { "application/json" }
     )
     public ResponseEntity<StarSystemRepresentation> getStarSystemByKey(@PathVariable("key") String key) {
         return starSystemService
@@ -77,18 +81,5 @@ public class StarSystemController {
                 .map(StarSystemRepresentation::new)
                 .map(ResponseEntity::ok)
                 .orElseThrow(() -> new NotFoundException("STAR SYSTEM NOT FOUND"));
-    }
-
-    @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/reachable-from/{key}",
-        produces = { "application/json" }
-    )
-    public ResponseEntity<StarSystemRepresentation> getReachableStarSystems(@PathVariable("key") String key) {
-        return starSystemService
-                .getStarSystemByKey(new StarSystemKey(key))
-                .map(StarSystemRepresentation::new)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 }

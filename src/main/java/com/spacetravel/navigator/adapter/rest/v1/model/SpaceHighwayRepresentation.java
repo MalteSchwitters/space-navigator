@@ -7,14 +7,14 @@ import org.springframework.lang.Nullable;
 public class SpaceHighwayRepresentation {
 
     private @Nullable String key;
-    private @Nullable String from;
-    private @Nullable String to;
+    private @Nullable String fromStarSystemKey;
+    private @Nullable String toStarSystemKey;
     private @Nullable Double duration;
 
     public SpaceHighwayRepresentation(@NonNull SpaceHighway domain) {
         key = domain.key().value();
-        from = domain.from().value();
-        to = domain.from().value();
+        fromStarSystemKey = domain.from().value();
+        toStarSystemKey = domain.to().value();
         duration = domain.duration();
     }
 
@@ -28,21 +28,21 @@ public class SpaceHighwayRepresentation {
     }
 
     @Nullable
-    public String getFrom() {
-        return from;
+    public String getFromStarSystemKey() {
+        return fromStarSystemKey;
     }
 
-    public void setFrom(@Nullable String from) {
-        this.from = from;
+    public void setFromStarSystemKey(@Nullable String fromStarSystemKey) {
+        this.fromStarSystemKey = fromStarSystemKey;
     }
 
     @Nullable
-    public String getTo() {
-        return to;
+    public String getToStarSystemKey() {
+        return toStarSystemKey;
     }
 
-    public void setTo(@Nullable String to) {
-        this.to = to;
+    public void setToStarSystemKey(@Nullable String toStarSystemKey) {
+        this.toStarSystemKey = toStarSystemKey;
     }
 
     @Nullable

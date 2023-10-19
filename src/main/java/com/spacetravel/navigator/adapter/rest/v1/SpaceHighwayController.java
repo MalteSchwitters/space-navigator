@@ -10,7 +10,6 @@ import com.spacetravel.navigator.model.StarSystemKey;
 import com.spacetravel.navigator.service.StarSystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,7 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/api/v1/star-routes")
+@RequestMapping("/api/v1/space-highways")
 public class SpaceHighwayController {
 
     private final StarSystemService starSystemService;
@@ -38,19 +37,19 @@ public class SpaceHighwayController {
     )
     public ResponseEntity<SpaceHighwayRepresentation> addSpaceHighway(@RequestBody CreateSpaceHighwayRequest request) {
         if (request.getFromStarSystemKey() == null) {
-            throw new BadRequestException("MISSING FROM STAR SYSTEM");
+            throw new BadRequestException("BAD REQUEST: missing from star system");
         }
         if (request.getToStarSystemKey() == null) {
-            throw new BadRequestException("MISSING TO STAR SYSTEM");
+            throw new BadRequestException("BAD REQUEST: missing to star system");
         }
         if (request.getDuration() == null) {
-            throw new BadRequestException("MISSING DURATION");
+            throw new BadRequestException("BAD REQUEST: missing duration");
         }
 
         var from = new StarSystemKey(request.getFromStarSystemKey());
         var to = new StarSystemKey(request.getToStarSystemKey());
         try {
-            var route = starSystemService.addRoute(from, to, request.getDuration());
+            var route = starSystemService.addSpaceHighway(from, to, request.getDuration());
 
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest().path("/by-key/" + route.key().value())

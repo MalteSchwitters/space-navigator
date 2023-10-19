@@ -1,6 +1,7 @@
 package com.spacetravel.navigator.service;
 
 import com.spacetravel.navigator.exceptions.InvalidRouteException;
+import com.spacetravel.navigator.exceptions.InvalidStarSystemException;
 import com.spacetravel.navigator.exceptions.NoSuchRouteException;
 import com.spacetravel.navigator.exceptions.RouteAlreadyExistsException;
 import com.spacetravel.navigator.model.SpaceHighway;
@@ -42,13 +43,19 @@ public class StarSystemService {
         return starSystemRepository.findByKey(key);
     }
 
-    public StarSystem addStarSystem(@NonNull String name) {
+    public StarSystem addStarSystem(@NonNull String name) throws InvalidStarSystemException {
+        if (name.isBlank()) {
+            throw new InvalidStarSystemException("missing name");
+        }
         return starSystemRepository.add(name);
     }
 
-    public SpaceHighway addRoute(@NonNull StarSystemKey from, @NonNull StarSystemKey to, double duration) throws RouteAlreadyExistsException, InvalidRouteException {
-        if (from.equals(to) || duration < 0) {
-            throw new InvalidRouteException();
+    public SpaceHighway addSpaceHighway(@NonNull StarSystemKey from, @NonNull StarSystemKey to, double duration) throws RouteAlreadyExistsException, InvalidRouteException {
+        if (from.equals(to)) {
+            throw new InvalidRouteException("start and end star systems are equal");
+        }
+        if (duration < 0) {
+            throw new InvalidRouteException("duration must not be negative");
         }
         return spaceHighwayRepository.add(from, to, duration);
     }

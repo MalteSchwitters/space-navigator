@@ -1,6 +1,7 @@
 package com.spacetravel.navigator.adapter.rest.v1;
 
 import com.spacetravel.errors.NotFoundException;
+import com.spacetravel.navigator.adapter.rest.v1.model.RouteDurationRepresentation;
 import com.spacetravel.navigator.exceptions.NoSuchRouteException;
 import com.spacetravel.navigator.model.StarSystemKey;
 import com.spacetravel.navigator.service.StarSystemService;
@@ -25,16 +26,16 @@ public class NavigatorController {
     }
 
     @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/calculate/route-duration",
-        produces = { "text/plain" },
+        method = RequestMethod.POST,
+        value = "/route-duration",
+        produces = { "application/json" },
         consumes = { "application/json" }
     )
-    public ResponseEntity<Double> calculateRouteDuration(@RequestBody List<String> starSystems) {
+    public ResponseEntity<RouteDurationRepresentation> calculateRouteDuration(@RequestBody List<String> starSystems) {
         var route = starSystems.stream().map(StarSystemKey::new).toList();
         try {
             var duration = starSystemService.calculateTotalDurationForRoute(route);
-            return ResponseEntity.ok(duration);
+            return ResponseEntity.ok(new RouteDurationRepresentation(duration));
         } catch (NoSuchRouteException e) {
             throw new NotFoundException("NO SUCH ROUTE");
         }
@@ -42,7 +43,7 @@ public class NavigatorController {
 
     @RequestMapping(
         method = RequestMethod.GET,
-        value = "/calculate/fastest-route/from/{fromStarSystem}/to/{toStarSystem}",
+        value = "/fastest-route/from/{fromStarSystem}/to/{toStarSystem}",
         produces = { "application/json" }
     )
     public ResponseEntity<List<String>> calculateRouteDuration(

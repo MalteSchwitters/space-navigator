@@ -1,9 +1,12 @@
 package com.spacetravel.errors;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,12 +23,48 @@ import org.springframework.web.bind.annotation.RestController;
 @ControllerAdvice
 public class CustomErrorController implements ErrorController {
 
+    private static final Logger log = LoggerFactory.getLogger(CustomErrorController.class);
+
     @ResponseBody()
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NotFoundException.class)
+    public final String handleNotFoundExceptionException(HttpServletRequest req, Exception ex) {
+        return ex.getMessage();
+    }
+
+    @ResponseBody()
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BadRequestException.class)
+    public final String handleBadRequestException(HttpServletRequest req, Exception ex) {
+        return ex.getMessage();
+    }
+
+    @ResponseBody()
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public final String handleIllegalArgumentException(HttpServletRequest req, Exception ex) {
+        return ex.getMessage();
+    }
+
+    @ResponseBody()
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
+    public final String handleHttpMediaTypeNotAcceptableExceptionException(HttpServletRequest req, Exception ex) {
+        return ex.getMessage();
+    }
+
+    @ResponseBody()
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ConflictException.class)
+    public final String handleConflictException(HttpServletRequest req, Exception ex) {
+        return ex.getMessage();
+    }
+
+    @ResponseBody()
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public final String handleAnyException(HttpServletRequest req, Exception ex) {
-        //        if (ex.getClass().getAnnotation(ResponseStatus.class) == null) {
-        //
-        //        }
+        log.error("Unexpected exception in request " + req.getRequestURI(), ex);
         return ex.getMessage();
     }
 

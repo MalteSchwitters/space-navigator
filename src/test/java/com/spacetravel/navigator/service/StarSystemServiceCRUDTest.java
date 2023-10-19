@@ -50,7 +50,7 @@ public class StarSystemServiceCRUDTest {
         var starSystemService = generateTestStarSystemService();
         var from = new StarSystemKey("vega");
         var to = new StarSystemKey("sirius");
-        var highway = starSystemService.addRoute(from, to, 1.0);
+        var highway = starSystemService.addSpaceHighway(from, to, 1.0);
         assertEquals(1.0, highway.duration());
         var route = starSystemService.calculateFastestRoute(from, to);
         assertEquals(2, route.size());
@@ -63,7 +63,7 @@ public class StarSystemServiceCRUDTest {
         var starSystemService = generateTestStarSystemService();
         var from = new StarSystemKey("vega");
         var to = new StarSystemKey("vega");
-        assertThrows(InvalidRouteException.class, () -> starSystemService.addRoute(from, to, 1.0));
+        assertThrows(InvalidRouteException.class, () -> starSystemService.addSpaceHighway(from, to, 1.0));
     }
 
     @Test
@@ -71,7 +71,7 @@ public class StarSystemServiceCRUDTest {
         var starSystemService = generateTestStarSystemService();
         var from = new StarSystemKey("vega");
         var to = new StarSystemKey("sirius");
-        assertThrows(InvalidRouteException.class, () -> starSystemService.addRoute(from, to, -1.0));
+        assertThrows(InvalidRouteException.class, () -> starSystemService.addSpaceHighway(from, to, -1.0));
     }
 
     private StarSystemService generateTestStarSystemService() throws Exception {
