@@ -2,8 +2,10 @@ package com.spacetravel.navigator.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.spacetravel.navigator.exceptions.NoSuchRouteException;
+import com.spacetravel.navigator.model.RouteFilter;
 import com.spacetravel.navigator.model.StarSystemKey;
 import com.spacetravel.navigator.repository.memory.SpaceHighwayInMemoryRepository;
 import com.spacetravel.navigator.repository.memory.StarSystemInMemoryRepository;
@@ -64,28 +66,59 @@ public class StarSystemServiceNavigatorTest {
         assertThrows(NoSuchRouteException.class, () -> service.calculateTotalDurationForRoute(route));
     }
 
+    // Exercise 6
+    @Test
+    public void testCalculateAllRoutesWithMaxNSteps() throws Exception {
+        var service = createService();
+        var routes = service.calculateAllRoutes(sirius, sirius, new RouteFilter(null, 3, null));
+        assertEquals(2, routes.size());
+    }
+
+    // Exercise 7
+    @Test
+    public void testCalculateAllRoutesWithExactlyNSteps() throws Exception {
+        var service = createService();
+        var routes = service.calculateAllRoutes(sol, sirius, new RouteFilter(4, 4, null));
+        assertEquals(3, routes.size());
+    }
+
     // Exercise 8
     @Test
     public void testCalculateFastestRoute() throws Exception {
         var service = createService();
-        var route = service.calculateFastestRoute(sol, sirius);
-        var duration = service.calculateTotalDurationForRoute(route);
-        assertEquals(9.0, duration);
+        var maybeRoute = service.calculateFastestRoute(sol, sirius);
+        assertTrue(maybeRoute.isPresent());
+        assertEquals(9.0, maybeRoute.get().duration());
     }
 
     @Test
     public void testCalculateFastestRouteNonReachable() throws Exception {
         var service = createService();
-        assertThrows(NoSuchRouteException.class, () -> service.calculateFastestRoute(sol, nonReachable));
+        var maybeRoute = service.calculateFastestRoute(sol, nonReachable);
+        assertTrue(maybeRoute.isEmpty());
     }
 
     // Exercise 9
     @Test
     public void testCalculateFastestRouteSameStartAndEnd() throws Exception {
         var navigatorService = createService();
-        var route = navigatorService.calculateFastestRoute(alphaCentauri, alphaCentauri);
-        var duration = navigatorService.calculateTotalDurationForRoute(route);
-        assertEquals(9.0, duration);
+        var maybeRoute = navigatorService.calculateFastestRoute(alphaCentauri, alphaCentauri);
+        assertTrue(maybeRoute.isPresent());
+        assertEquals(9.0, maybeRoute.get().duration());
+    }
+
+    // Exercise 10
+    @Test
+    public void testCalculateAllRoutesWithDurationBelowN() throws Exception {
+        var service = createService();
+        var routes = service.calculateAllRoutes(sirius, sirius, new RouteFilter(null, null, 30.0));
+        assertEquals(7, routes.size());
+    }
+
+    @Test
+    public void testCalculateAllRoutesWithoutEndCondition() throws Exception {
+        var service = createService();
+        assertThrows(IllegalArgumentException.class, () -> service.calculateAllRoutes(sirius, sirius, new RouteFilter(null, null, null)));
     }
 
     private StarSystemService createService() throws Exception {

@@ -2,7 +2,6 @@ package com.spacetravel.navigator.adapter.rest.v1;
 
 import com.google.gson.Gson;
 import com.spacetravel.navigator.adapter.rest.v1.model.RouteDurationRepresentation;
-import com.spacetravel.navigator.adapter.rest.v1.model.StarSystemRepresentation;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;

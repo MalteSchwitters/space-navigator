@@ -52,10 +52,10 @@ public class StarSystemServiceCRUDTest {
         var to = new StarSystemKey("sirius");
         var highway = starSystemService.addSpaceHighway(from, to, 1.0);
         assertEquals(1.0, highway.duration());
-        var route = starSystemService.calculateFastestRoute(from, to);
-        assertEquals(2, route.size());
-        var duration = starSystemService.calculateTotalDurationForRoute(route);
-        assertEquals(1.0, duration);
+        var maybeRoute = starSystemService.calculateFastestRoute(from, to);
+        assertTrue(maybeRoute.isPresent());
+        assertEquals(2, maybeRoute.get().starSystems().size());
+        assertEquals(1.0, maybeRoute.get().duration());
     }
 
     @Test

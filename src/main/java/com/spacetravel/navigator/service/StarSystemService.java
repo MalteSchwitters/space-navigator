@@ -4,9 +4,7 @@ import com.spacetravel.navigator.exceptions.InvalidRouteException;
 import com.spacetravel.navigator.exceptions.InvalidStarSystemException;
 import com.spacetravel.navigator.exceptions.NoSuchRouteException;
 import com.spacetravel.navigator.exceptions.RouteAlreadyExistsException;
-import com.spacetravel.navigator.model.SpaceHighway;
-import com.spacetravel.navigator.model.StarSystem;
-import com.spacetravel.navigator.model.StarSystemKey;
+import com.spacetravel.navigator.model.*;
 import com.spacetravel.navigator.repository.SpaceHighwayRepository;
 import com.spacetravel.navigator.repository.StarSystemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +12,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.PriorityQueue;
+import javax.swing.text.html.Option;
+import java.util.*;
 import java.util.stream.Stream;
 
 @Service
@@ -89,14 +85,75 @@ public class StarSystemService {
     }
 
     /**
+     * Calculate all known routes between the 'from' star-system and the 'to' star-system that match the given filter
+     * @param from start star-system
+     * @param to end star-system
+     * @param filter Filter of minimum steps, maximum steps or maximum duration
+     * @return a list of all routes
+     */
+    public List<Route> calculateAllRoutes(@NonNull StarSystemKey from, @NonNull StarSystemKey to, @NonNull RouteFilter filter) {
+        return calculateAllRoutes(from, to, filter, 0.0);
+    }
+
+    private List<Route> calculateAllRoutes(@NonNull StarSystemKey from, @NonNull StarSystemKey to, @NonNull RouteFilter filter, double duration) {
+        // validate cancel conditions to prevent endless loops
+        if (filter.maxSteps() == null && filter.maxDuration() == null) {
+            throw new IllegalArgumentException("At least one end condition must be specified!");
+        }
+
+        // cancel condition: max duration exceeded
+        if (filter.maxDuration() != null && duration > filter.maxDuration()) {
+            return Collections.emptyList();
+        }
+
+        // cancel condition: maximum depth reached
+        if (filter.maxSteps() != null && filter.maxSteps() <= 0) {
+            return Collections.emptyList();
+        }
+
+        List<Route> routes = new LinkedList<>();
+        var spaceHighways = this.spaceHighwayRepository
+            .findByStartSystem(from)
+            .toList();
+        // we found our target system
+        if (filter.minSteps() == null || filter.minSteps() <= 1) {
+            for (var spaceHighway : spaceHighways) {
+                if (spaceHighway.to().equals(to)) {
+                    var totalDuration = duration + spaceHighway.duration();
+                    // only add route to matches if don't exceed the max duration filter
+                    if (filter.maxDuration() == null || totalDuration < filter.maxDuration()) {
+                        routes.add(new Route(List.of(from, to), totalDuration));
+                    }
+                    break;
+                }
+            }
+        }
+
+        // recursively test all reachable star systems
+        for (var spaceHighway : spaceHighways) {
+            var newFilter = new RouteFilter(
+                    filter.minSteps() != null ? filter.minSteps() - 1: null,
+                    filter.maxSteps() != null ? filter.maxSteps() -1 : null,
+                    filter.maxDuration() != null ? filter.maxDuration() : null);
+            var newDuration = duration + spaceHighway.duration();
+            for (var subRoute : calculateAllRoutes(spaceHighway.to(), to, newFilter, newDuration)) {
+                List<StarSystemKey> starSystems = new LinkedList<>();
+                starSystems.add(from);
+                starSystems.addAll(subRoute.starSystems());
+                routes.add(new Route(starSystems, subRoute.duration()));
+            }
+        }
+        return routes;
+    }
+
+    /**
      * This function calculates the fastest route between two star-systems using the a* algorithm. If start and end
      * star systems are the same, at least one other star system is visited.
      * @param from star-system key
      * @param to star-system key
-     * @return fastest route with at least two star-systems
-     * @throws NoSuchRouteException if no route was found
+     * @return an optional of the fastest route with at least two star-systems
      */
-    public List<StarSystemKey> calculateFastestRoute(@NonNull StarSystemKey from, @NonNull StarSystemKey to) throws NoSuchRouteException {
+    public Optional<Route> calculateFastestRoute(@NonNull StarSystemKey from, @NonNull StarSystemKey to) {
         var open = new PriorityQueue<RouteNode>();
         open.add(new RouteNode(from, 0.0, null));
         var closed = new LinkedList<StarSystemKey>();
@@ -107,13 +164,14 @@ public class StarSystemService {
             if (currentNode.previous != null) {
                 if (currentNode.starSystem().equals(to)) {
                     // target system found, resolve route from nodes
-                    var route = new LinkedList<StarSystemKey>();
-                    route.add(currentNode.starSystem());
+                    var starSystems = new LinkedList<StarSystemKey>();
+                    var cost = currentNode.cost();
+                    starSystems.add(currentNode.starSystem());
                     while (currentNode.previous != null) {
                         currentNode = currentNode.previous;
-                        route.add(0, currentNode.starSystem());
+                        starSystems.add(0, currentNode.starSystem());
                     }
-                    return route;
+                    return Optional.of(new Route(starSystems, cost));
                 }
                 closed.add(currentNode.starSystem());
             }
@@ -140,8 +198,8 @@ public class StarSystemService {
             }
 
         }
-        // die Open List ist leer, es existiert kein Pfad zum Ziel
-        throw new NoSuchRouteException();
+        // open list is empty, there is no path to the target
+        return Optional.empty();
     }
 
     private record RouteNode(

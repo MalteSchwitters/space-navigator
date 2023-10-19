@@ -52,11 +52,10 @@ public class NavigatorController {
     ) {
         var from = new StarSystemKey(fromStarSystem);
         var to = new StarSystemKey(toStarSystem);
-        try {
-            var route = starSystemService.calculateFastestRoute(from, to);
-            return ResponseEntity.ok(route.stream().map(StarSystemKey::value).toList());
-        } catch (NoSuchRouteException e) {
-            throw new NotFoundException("NO SUCH ROUTE");
-        }
+
+        var route = starSystemService.calculateFastestRoute(from, to)
+                .orElseThrow(() -> new NotFoundException("NO SUCH ROUTE"));
+
+        return ResponseEntity.ok(route.starSystems().stream().map(StarSystemKey::value).toList());
     }
 }
